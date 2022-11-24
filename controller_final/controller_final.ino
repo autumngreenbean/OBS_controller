@@ -6,11 +6,14 @@ const byte select= 3;
 const byte val3= 4;
 const byte val2= 5;
 const byte val1= 6;
+bool switched;
+bool decrease;
 int currentFilter;
 int currentVal;
 int offset1;
 int offset2;
 int offset3;
+int num = -1; //for testing
 
 void setup() {
 //assign pins
@@ -20,16 +23,40 @@ void setup() {
   pinMode(val2, INPUT_PULLUP);
   pinMode(val3, INPUT_PULLUP);
    while (!Serial) {
-    ;  // wait for serial port to connect. Needed for Leonardo only
+    ; 
   }
-offset1,offset2,offset3 = 0;
-begin();
+  offset2,offset3 = 0;
+  offset1 = -4;
+  switched = false;
+  decrease = false;
+  begin();
 }
 
 void begin() {
   Keyboard.begin();
   Mouse.begin();
 //Open OBS
+  Keyboard.press(KEY_LEFT_GUI); 
+  Keyboard.press('r');         
+  delay(100);                  
+  Keyboard.releaseAll();       
+  delay(1000);                  
+  Keyboard.print("cmd");
+  Keyboard.press(KEY_RETURN);
+  delay(100);
+  Keyboard.releaseAll();
+  delay(3000); 
+  Keyboard.print("cd C:\\Program Files\\obs-studio\\bin\\64bit\\");
+  delay(1000);
+  Keyboard.press(KEY_RETURN);
+  delay(100);
+  Keyboard.releaseAll();
+  Keyboard.print("start obs64.exe");
+  delay(1000);
+  Keyboard.press(KEY_RETURN);
+  delay(100);
+  Keyboard.releaseAll();
+  delay(5000);
 
 //Select Scene
   MouseTo.setTarget(50, 545);
@@ -90,10 +117,14 @@ void value1(bool reset) {
       Mouse.click();      
     }
     if (currentFilter== 5) { //Color Correction
-      MouseTo.setTarget(950, 470); 
+      MouseTo.setTarget(1050, 470); 
       while (MouseTo.move()== false) {}
       delay(100);
       Mouse.click();
+      Keyboard.press(KEY_RIGHT_CTRL);
+      Keyboard.press('a');
+      Keyboard.releaseAll();
+      switched= false;
     }
   }
 //value1 pressed
@@ -104,16 +135,34 @@ void value1(bool reset) {
   }
   currentVal = 1;
 }
+
 void colorCorrect(int valPressed) {
   if (valPressed== 1) {
     if (currentVal== 3) value1(true); 
     if (currentVal== 2) value1(true); 
-    if (currentVal== 1) { 
+    if (currentVal== 1) {
+      if (switched== true) {
+      Keyboard.press(KEY_RIGHT_CTRL);
+      Keyboard.press('a');
+      Keyboard.releaseAll();
+      delay(100);
+      } else switched= true;
+      
+      Keyboard.print(String(offset1));
+      delay(200);
+      if (offset1== 4) decrease= true;
+      if (offset1== -4) decrease = false;
+      if (decrease== true) offset1--;
+      if (decrease== false) offset1++;
+      delay(200);
       
     }
- }
+  }
  if (valPressed== 2) {
    if (currentVal== 1) {
+      Keyboard.press(KEY_TAB);
+      delay(200);
+      Keyboard.releaseAll();
       Keyboard.press(KEY_TAB);
       delay(200);
       Keyboard.releaseAll();
@@ -342,13 +391,11 @@ void switcher() {
       Mouse.move(0,85);
       delay(100);
       Mouse.release();
-      Mouse.move(-50,-60);
+      Mouse.move(-50,-50);
       Mouse.click();
     } 
     if (currentFilter== 5) {
-      offset1= 0;
-      offset2= 0; 
-      offset3= 0;
+      offset1= -4;
     }
   delay(500);
  value1(true);  
@@ -371,22 +418,17 @@ void buttoncheck() {
   if (digitalRead(3)== LOW) switcher();
   if (digitalRead(2)== LOW) hider();
   
-  }
+}
 
-
-void test() {
+void test() { //for value1() colorCorrect
   if (digitalRead(select)== LOW) {
-   MouseTo.setTarget(1045, 470); 
-      while (MouseTo.move()== false) {}
-      delay(100);
-      Mouse.click();
-      Keyboard.press(KEY_RIGHT_CTRL);
-      Keyboard.press('a');
-      Keyboard.releaseAll();
+  String myString = String(num);
+  Keyboard.print(myString);
+  delay(200);
   }
 }
-  
-  void loop() {
+
+void loop() {
   buttoncheck();
   // test();
 }

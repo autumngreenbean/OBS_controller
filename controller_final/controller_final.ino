@@ -79,7 +79,7 @@ void begin() {
     delay(200);   
     Keyboard.releaseAll();
     currentFilter = 3;
-  //Nav to val1 of filter 3
+  //Go to val1 of filter 3
   MouseTo.setTarget(900, 445);
   while (MouseTo.move()== false) {}
   delay(100);

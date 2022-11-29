@@ -11,9 +11,11 @@ bool decrease;
 int currentFilter;
 int currentVal;
 int offset1;
-int offset2;
-int offset3;
+int offset2Index;
+int offset3Index;
 int num = -1; //for testing
+double offset2[7] = {-1.00,0.00,1.00,2.00,3.00,4.00,5.00};
+double offset3[6] = {-180.0,-90,-45,0,45,90};
 
 void setup() {
 //assign pins
@@ -25,7 +27,7 @@ void setup() {
    while (!Serial) {
     ; 
   }
-  offset2,offset3 = 0;
+  offset2Index,offset3Index = 0;
   offset1 = -4;
   switched = false;
   decrease = false;
@@ -165,15 +167,18 @@ void colorCorrect(int valPressed) {
       Keyboard.releaseAll();
       Keyboard.press(KEY_TAB);
       delay(200);
+      Keyboard.press(KEY_TAB);
+      delay(200);
+      Keyboard.releaseAll();
+      Keyboard.press(KEY_TAB);
+      delay(200);
       Keyboard.releaseAll();
    }
-    if (currentVal== 2) {
-      Keyboard.press(KEY_UP_ARROW);
+    if (currentVal== 2) { 
+      if(offset2Index== 8) offset2Index= 0;
+      Keyboard.print(String(offset2[offset2Index]));
       delay(200);
-      Keyboard.releaseAll();
-      Keyboard.press(KEY_UP_ARROW);
-      delay(200);
-      Keyboard.releaseAll();
+      offset2Index++;
     }
     if (currentVal== 3) {
       value1(true);
@@ -184,17 +189,18 @@ void colorCorrect(int valPressed) {
 
   if (valPressed== 3) {
     if (currentVal== 3) {
-      Keyboard.press(KEY_UP_ARROW);
-      delay(200);
-      Keyboard.releaseAll();
-      Keyboard.press(KEY_UP_ARROW);
-      delay(200);
-      Keyboard.releaseAll();
+      if(offset3Index== 7) offset3Index= 0;
+       Keyboard.print(String(offset3[offset3Index]));
+       delay(200);
+       offset3Index++;
+      }
+     if (currentVal== 3) {
+        value1(true);
+        delay(200);
+        colorCorrect(2);
+      }
     }
     if (currentVal== 2) {
-      Keyboard.press(KEY_TAB);
-      delay(200);
-      Keyboard.releaseAll();
       Keyboard.press(KEY_TAB);
       delay(200);
       Keyboard.releaseAll();
@@ -215,9 +221,15 @@ void colorCorrect(int valPressed) {
       Keyboard.press(KEY_TAB);
       delay(200);
       Keyboard.releaseAll();
+      Keyboard.press(KEY_TAB);
+      delay(200);
+      Keyboard.releaseAll();
+      Keyboard.press(KEY_TAB);
+      delay(200);
+      Keyboard.releaseAll();
     }
   }
-}
+
 void drunkShad(int valPressed) {
  if (valPressed== 1) {
     if (currentVal== 3) value1(true); 
@@ -368,6 +380,7 @@ void switcher() {
   while (MouseTo.move()== false) {}
   delay(100);
   Mouse.click();
+ 
    if (currentFilter== 5) { //cycle if last instance
       Keyboard.press(KEY_UP_ARROW);
       delay(200);
@@ -375,6 +388,7 @@ void switcher() {
       Keyboard.press(KEY_UP_ARROW);
       delay(200);
       Keyboard.releaseAll();
+      offset2Index= 0;
       currentFilter= 3;
     }
     else {  //next filter

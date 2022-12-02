@@ -31,13 +31,15 @@ void setup() {
   offset1 = -4;
   switched = false;
   decrease = false;
+  currentFilter = 3;
+  currentVal = 1;
   begin();
 }
 
 void begin() {
   Keyboard.begin();
   Mouse.begin();
-//Open OBS
+
   Keyboard.press(KEY_LEFT_GUI); 
   Keyboard.press('r');         
   delay(100);                  
@@ -80,12 +82,12 @@ void begin() {
     Keyboard.press(KEY_DOWN_ARROW);
     delay(200);   
     Keyboard.releaseAll();
-    currentFilter = 3;
   //Go to val1 of filter 3
   MouseTo.setTarget(900, 445);
   while (MouseTo.move()== false) {}
   delay(100);
   Mouse.click();
+      currentFilter = 3;
   currentVal = 1;
 }
 
@@ -194,12 +196,7 @@ void colorCorrect(int valPressed) {
        delay(200);
        offset3Index++;
       }
-     if (currentVal== 3) {
-        value1(true);
-        delay(200);
-        colorCorrect(2);
-      }
-    }
+
     if (currentVal== 2) {
       Keyboard.press(KEY_TAB);
       delay(200);
@@ -229,7 +226,7 @@ void colorCorrect(int valPressed) {
       Keyboard.releaseAll();
     }
   }
-
+}
 void drunkShad(int valPressed) {
  if (valPressed== 1) {
     if (currentVal== 3) value1(true); 
